@@ -1,0 +1,5 @@
+Changelog for reTablerX.
+
+1.0.0-pl
+==============
+- First build
