@@ -11,7 +11,7 @@ if (!defined('MODX_CORE_PATH')) {
 return [
     'name' => 'reTablerX',
     'name_lower' => 'retablerx',
-    'version' => '1.0.0',
+    'version' => '1.1.0',
     'release' => 'pl',
     // Install package to site right after build
     'install' => true,
@@ -21,7 +21,7 @@ return [
         'menus' => true,
         'plugins' => true,
         'resources' => false,
-        'settings' => false,
+        'settings' => true,
         'snippets' => true,
         'templates' => false,
         'widgets' => false,

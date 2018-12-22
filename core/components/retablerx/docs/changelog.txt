@@ -1,5 +1,10 @@
 Changelog for reTablerX.
 
+1.1.0-pl
+==============
+- Add new option mincol for snippet and global_mincol for system settings
+- Fix calculate height rows which have padding
+
 1.0.0-pl
 ==============
 - First build

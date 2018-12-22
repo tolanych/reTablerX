@@ -23,21 +23,23 @@
 var ReTabler = (function () {
     var ReTabler = function () {}
 
-    ReTabler.add = function (selector, prefix, pad) {
-		$prefix = prefix ? prefix:'retabler-';
-		$pad = pad ? pad: '35%';
+    ReTabler.add = function (selector, params) {
+		$prefix = params['prefix'] ? params['prefix']:'retabler-';
+		$pad = params['pad'] ? params['pad']: '35%';
+		$mincol = params['mincol'] ? params['mincol']: '4';
+		
 		i = 1;
 		[].forEach.call(document.querySelectorAll(selector), function(el) {
 			if (el.getAttribute('retabler') != $pad) { //redeclare width pad
 				el.classList.add($prefix+i);
-				ReTabler.generateCss(el, $prefix+i, $pad);
+				ReTabler.generateCss(el, $prefix+i, $pad, $mincol);
 				el.setAttribute('retabler', $pad);
 				i++;
 			}
 		})
     }
 
-	ReTabler.generateCss = function (obj, cl, pad) {
+	ReTabler.generateCss = function (obj, cl, pad, mincol) {
 		var colCount = 0;
 		var thead = false;
 		var theadel = 'td';
@@ -47,7 +49,7 @@ var ReTabler = (function () {
 		// Check table with thead
 		is_head = obj.querySelectorAll('thead');
 		if (is_head.length) {
-			theadel='th';
+			if (is_head[0].querySelectorAll('th')[0]) {theadel='th'}
 			wrapper_head = is_head[0];
 		}
 		else {
@@ -68,8 +70,8 @@ var ReTabler = (function () {
 			colCount++;
 		})
 
-		if (colCount < 4) {
-			console.log(cl+': dont reorganize table with column less 4');
+		if (colCount < mincol) {
+			console.log(cl+': dont reorganize table with column less '+mincol);
 			return false;
 		}
 
@@ -107,16 +109,22 @@ var ReTabler = (function () {
 	}
 
 	// calculate min-height row
+	ReTabler.numStyle = function (param) {
+		return Number(param.slice(0,-2));
+	}
+	// calculate min-height row
 	ReTabler.calculateHeight = function (obj) {
 		[].forEach.call(obj.querySelectorAll('tbody td'), function (td) {
 			_hht = window.getComputedStyle(td,null).getPropertyValue('height');
 			_hhc = window.getComputedStyle(td,':before').getPropertyValue('height');
+			_hhtpt = window.getComputedStyle(td,null).getPropertyValue('padding-top');
+			_hhtpb = window.getComputedStyle(td,null).getPropertyValue('padding-bottom');
 
-			_hhc = Number(_hhc.slice(0,-2));
-			_hht = Number(_hht.slice(0,-2));
+			_hhc = ReTabler.numStyle(_hhc);
+			_hht = ReTabler.numStyle(_hht);
 
 			if (_hhc > _hht) {
-				td.style['min-height'] = _hhc+'px';
+				td.style['min-height'] = _hhc+ ReTabler.numStyle(_hhtpt) + ReTabler.numStyle(_hhtpb)+'px';
 			}
 		});
 	}
