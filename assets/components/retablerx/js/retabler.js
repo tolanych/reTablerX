@@ -5,46 +5,47 @@
  *	ReTabler.add('#sometable');
  *	ReTabler.add('section.content table');
  *	ReTabler.add('body table');
-*/
+ */
 
 // polyfill closest
-(function(e){ 
- e.closest = e.closest || function(css){ 
-   var node = this;
-  
-   while (node) { 
-      if (node.matches(css)) return node; 
-      else node = node.parentElement; 
-   } 
-   return null; 
- } 
+(function(e){
+	e.closest = e.closest || function(css){
+		var node = this;
+
+		while (node) {
+			if (node.matches(css)) return node;
+			else node = node.parentElement;
+		}
+		return null;
+	}
 })(Element.prototype);
 
 var ReTabler = (function () {
-    var ReTabler = function () {}
+	var tableID = 0;
+	var ReTabler = function () {}
 
-    ReTabler.add = function (selector, params) {
+	ReTabler.add = function (selector, params) {
 		$prefix = params['prefix'] ? params['prefix']:'retabler-';
 		$pad = params['pad'] ? params['pad']: '35%';
 		$mincol = params['mincol'] ? params['mincol']: '4';
-		
 		i = 1;
 		[].forEach.call(document.querySelectorAll(selector), function(el) {
 			if (el.getAttribute('retabler') != $pad) { //redeclare width pad
-				el.classList.add($prefix+i);
+				el.classList.add($prefix+i, 'tableID-'+tableID);
 				ReTabler.generateCss(el, $prefix+i, $pad, $mincol);
 				el.setAttribute('retabler', $pad);
 				i++;
+				tableID++;
 			}
 		})
-    }
+	}
 
 	ReTabler.generateCss = function (obj, cl, pad, mincol) {
 		var colCount = 0;
 		var thead = false;
 		var theadel = 'td';
 		var inlineStyle = '';
-		cl = '.'+cl;
+		cl = '.'+cl+'.tableID-'+tableID;
 
 		// Check table with thead
 		is_head = obj.querySelectorAll('thead');
@@ -75,7 +76,7 @@ var ReTabler = (function () {
 			return false;
 		}
 
-		inlineStyle = "@media  only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 1024px) {";
+		inlineStyle = "@media  only screen and (max-width: 768px), (min-device-width: 768px) and (max-device-width: 1023px) {";
 
 		var cssrule = [
 			' { display:block; }',
